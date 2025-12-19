@@ -1,5 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import Layout from "../../components/Layout";
+import Card from "../../components/Card";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:4000";
 
@@ -16,20 +18,23 @@ export default function SessionDetail() {
       .finally(() => setLoading(false));
   }, [id]);
   return (
-    <div style={{ padding: 24 }}>
-      <h1>Session {id}</h1>
+    <Layout title={`Session ${id || ""}`}>
       {loading ? (
-        <p>Loading...</p>
+        <Card>Loading session…</Card>
       ) : (
-        <ul>
-          {events.map((e, idx) => (
-            <li key={idx}>
-              <strong>{e.type}</strong> {new Date(e.timestamp).toLocaleString()} {e.page_url}{" "}
-              {e.type === "click" ? `(${e.x}, ${e.y})` : ""}
-            </li>
-          ))}
-        </ul>
+        <Card title="User Journey" subtitle="Ordered list of events">
+          <ul style={{ paddingLeft: 16, margin: 0 }}>
+            {events.map((e, idx) => (
+              <li key={idx} style={{ marginBottom: 6 }}>
+                <span className={`badge ${e.type}`}>{e.type}</span>{" "}
+                {new Date(e.timestamp).toLocaleString()}{" "}
+                <strong>{e.page_url}</strong>{" "}
+                {e.type === "click" ? `(${e.x}, ${e.y})` : ""}
+              </li>
+            ))}
+          </ul>
+        </Card>
       )}
-    </div>
+    </Layout>
   );
 }

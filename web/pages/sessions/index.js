@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Layout from "../../components/Layout";
+import Table from "../../components/Table";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:4000";
 
@@ -13,18 +15,17 @@ export default function Sessions() {
       .finally(() => setLoading(false));
   }, []);
   return (
-    <div style={{ padding: 24 }}>
-      <h1>Sessions</h1>
+    <Layout title="Sessions">
       {loading ? (
-        <p>Loading...</p>
+        <div className="card">Loading sessions…</div>
       ) : (
-        <table border="1" cellPadding="8">
+        <Table>
           <thead>
             <tr>
               <th>Session</th>
               <th>Total Events</th>
-              <th>First</th>
-              <th>Last</th>
+              <th>First Activity</th>
+              <th>Last Activity</th>
             </tr>
           </thead>
           <tbody>
@@ -39,8 +40,8 @@ export default function Sessions() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </Table>
       )}
-    </div>
+    </Layout>
   );
 }
