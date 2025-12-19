@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import Layout from "../components/Layout";
+import Card from "../components/Card";
+import Input from "../components/Input";
+import Button from "../components/Button";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:4000";
 
@@ -30,50 +34,48 @@ export default function Heatmap() {
   }, []);
 
   return (
-    <div style={{ padding: 24 }}>
-      <h1>Heatmap</h1>
-      <div style={{ marginBottom: 12 }}>
-        <input
-          placeholder="Page URL"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          style={{ width: 480, padding: 8 }}
-        />
-        <button onClick={load} style={{ marginLeft: 8, padding: "8px 12px" }}>
-          Load
-        </button>
-      </div>
-      {loading && <p>Loading...</p>}
-      <div
-        style={{
-          position: "relative",
-          width: containerW,
-          height: containerH,
-          background: "#f9f9f9",
-          border: "1px solid #ddd"
-        }}
-      >
-        {clicks.map((c, i) => {
-          const left = (c.x || 0) * scaleX;
-          const top = (c.y || 0) * scaleY;
-          return (
-            <div
-              key={i}
-              style={{
-                position: "absolute",
-                left,
-                top,
-                width: 8,
-                height: 8,
-                background: "rgba(255,0,0,0.7)",
-                borderRadius: 4,
-                transform: "translate(-50%, -50%)"
-              }}
-              title={`${Math.round(c.x || 0)}, ${Math.round(c.y || 0)}`}
-            />
-          );
-        })}
-      </div>
-    </div>
+    <Layout title="Heatmap">
+      <Card title="Controls" subtitle="Enter a page URL and load click data">
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          <Input label="URL" className="wide" placeholder="Page URL" value={url} onChange={(e) => setUrl(e.target.value)} />
+          <Button variant="primary" onClick={load}>Load</Button>
+          {loading && <span className="muted">Loading…</span>}
+        </div>
+      </Card>
+      <Card title="Heatmap" subtitle={`Container ${containerW}×${containerH}, ${clicks.length} clicks`}>
+        <div
+          style={{
+            position: "relative",
+            width: containerW,
+            height: containerH,
+            background: "#f9f9f9",
+            border: "1px solid var(--border)",
+            borderRadius: 8
+          }}
+        >
+          {clicks.map((c, i) => {
+            const left = (c.x || 0) * scaleX;
+            const top = (c.y || 0) * scaleY;
+            return (
+              <div
+                key={i}
+                style={{
+                  position: "absolute",
+                  left,
+                  top,
+                  width: 8,
+                  height: 8,
+                  background: "rgba(255,0,0,0.7)",
+                  borderRadius: 4,
+                  transform: "translate(-50%, -50%)"
+                }}
+                title={`${Math.round(c.x || 0)}, ${Math.round(c.y || 0)}`}
+              />
+            );
+          })}
+        </div>
+        <div className="muted" style={{ marginTop: 8 }}>Tip: Use the Demo page to generate clicks.</div>
+      </Card>
+    </Layout>
   );
 }
