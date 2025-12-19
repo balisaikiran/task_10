@@ -3,13 +3,11 @@ import Link from "next/link";
 import Layout from "../../components/Layout";
 import Table from "../../components/Table";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:4000";
-
 export default function Sessions() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    fetch(`${API_BASE}/api/sessions`)
+    fetch("/api/sessions")
       .then((r) => r.json())
       .then((d) => setRows(d))
       .finally(() => setLoading(false));

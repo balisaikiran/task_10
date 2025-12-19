@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import Layout from "../../components/Layout";
 import Card from "../../components/Card";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:4000";
-
 export default function SessionDetail() {
   const router = useRouter();
   const { id } = router.query;
@@ -12,7 +10,7 @@ export default function SessionDetail() {
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     if (!id) return;
-    fetch(`${API_BASE}/api/sessions/${encodeURIComponent(id)}/events`)
+    fetch(`/api/sessions/${encodeURIComponent(id)}/events`)
       .then((r) => r.json())
       .then((d) => setEvents(d))
       .finally(() => setLoading(false));

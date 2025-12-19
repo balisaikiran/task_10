@@ -2,14 +2,14 @@
 
 ## Objective
 - Track `page_view` and `click` events with a lightweight JS tracker
-- Store events in MongoDB via a Node.js API
+- Store events in MongoDB via API endpoints
 - Visualize sessions and a click heatmap in a Next.js dashboard
 
 ## Tech Stack
-- Backend: Node.js, Express, Mongoose, Zod
+- Backend: Next.js API Routes, Mongoose, Zod
 - Database: MongoDB (Atlas or local)
 - Frontend: Next.js (React)
-- Tracker: Vanilla JS bundled with esbuild
+- Tracker: Vanilla JS (served from `web/public/tracker.js`)
 
 ## Repository Structure
 - `server/` Express API and Mongoose models
@@ -19,17 +19,11 @@
 ## Setup
 1. Prerequisites: Node.js 18+, MongoDB (local or Atlas URI)
 2. Install dependencies:
-   - `cd server && npm install`
-   - `cd ../tracker && npm install`
-   - `cd ../web && npm install`
+   - `cd web && npm install`
 3. Configure environment:
-   - In `server`, create `.env` with `MONGODB_URI` and optional `PORT`
-   - In `web`, optionally set `NEXT_PUBLIC_API_BASE` (defaults to `http://localhost:4000`)
-4. Build tracker:
-   - `cd tracker && npm run build`
-5. Run servers:
-   - API: `cd server && npm run dev` (http://localhost:4000)
-   - Web: `cd web && npm run dev` (http://localhost:3000)
+   - In `web`, set `MONGODB_URI` (Atlas or local)
+4. Run:
+   - `cd web && npm run dev` (http://localhost:3000)
 
 ## APIs
 - `POST /api/events` receive and store events
@@ -39,7 +33,7 @@
 
 ## Tracker Usage
 - Embed on any page:
-  - `<script src="http://localhost:4000/tracker.js" data-api="http://localhost:4000/api/events"></script>`
+  - `<script src="/tracker.js" data-api="/api/events"></script>`
 - Automatically sends `page_view` on load and `click` on user clicks
 - Uses `localStorage` key `analytics_session_id` for session persistence
 
@@ -56,8 +50,18 @@
 - Minimal auth and rate limiting, suitable for a candidate assignment
 
 ## Production Notes
-- Serve `tracker.js` via the API server or a CDN
-- Enable CORS appropriately
-- Use MongoDB Atlas and set `MONGODB_URI` in environment
+- Set `MONGODB_URI` in your environment (Vercel project settings)
 - Consider adding input schema validation errors detail and request logging
 
+## Deploy to Vercel
+1. Push this repository to GitHub.
+2. In Vercel, click “New Project” and import the repo.
+3. Set the Root Directory to `web`.
+4. In Vercel → Project Settings → Environment Variables, add:
+   - `MONGODB_URI` = your MongoDB Atlas connection string (include a DB name, e.g. `/user_analytics`)
+5. Deploy.
+
+After deploy:
+- Dashboard: `https://<your-app>.vercel.app/`
+- Demo page (generates events): `https://<your-app>.vercel.app/demo`
+- Tracker script: `https://<your-app>.vercel.app/tracker.js`

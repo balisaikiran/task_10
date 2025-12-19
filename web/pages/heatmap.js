@@ -4,8 +4,6 @@ import Card from "../components/Card";
 import Input from "../components/Input";
 import Button from "../components/Button";
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:4000";
-
 export default function Heatmap() {
   const [url, setUrl] = useState("");
   const [clicks, setClicks] = useState([]);
@@ -22,7 +20,7 @@ export default function Heatmap() {
   function load() {
     if (!url) return;
     setLoading(true);
-    fetch(`${API_BASE}/api/heatmap?url=${encodeURIComponent(url)}`)
+    fetch(`/api/heatmap?url=${encodeURIComponent(url)}`)
       .then((r) => r.json())
       .then((d) => setClicks(d.clicks || []))
       .finally(() => setLoading(false));

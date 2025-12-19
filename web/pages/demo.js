@@ -6,7 +6,7 @@ export default function Demo() {
   return (
     <Layout title="Demo">
       <Head>
-        <script src="http://localhost:4000/tracker.js" data-api="http://localhost:4000/api/events"></script>
+        <script src="/tracker.js" data-api="/api/events"></script>
       </Head>
       <Card title="Instructions" subtitle="This page loads the tracker; clicks generate events.">
         Click inside the area below to emit click events with coordinates.
