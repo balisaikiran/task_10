@@ -6,16 +6,26 @@ import Table from "../../components/Table";
 export default function Sessions() {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   useEffect(() => {
     fetch("/api/sessions")
-      .then((r) => r.json())
+      .then(async (r) => {
+        const data = await r.json().catch(() => null);
+        if (!r.ok) {
+          throw new Error((data && data.error) || "request_failed");
+        }
+        return data;
+      })
       .then((d) => setRows(d))
+      .catch((e) => setError(e?.message || "request_failed"))
       .finally(() => setLoading(false));
   }, []);
   return (
     <Layout title="Sessions">
       {loading ? (
         <div className="card">Loading sessions…</div>
+      ) : error ? (
+        <div className="card">Error: {error}</div>
       ) : (
         <Table>
           <thead>

@@ -26,7 +26,9 @@ export default async function handler(req, res) {
     await Event.create(doc);
     return res.status(201).json({ ok: true });
   } catch (e) {
+    if (e && e.message === "Missing MONGODB_URI") {
+      return res.status(500).json({ error: "missing_env", env: "MONGODB_URI" });
+    }
     return res.status(500).json({ error: "store_failed" });
   }
 }
-

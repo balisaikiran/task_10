@@ -24,7 +24,9 @@ export default async function handler(req, res) {
     }));
     return res.json(out);
   } catch (e) {
+    if (e && e.message === "Missing MONGODB_URI") {
+      return res.status(500).json({ error: "missing_env", env: "MONGODB_URI" });
+    }
     return res.status(500).json({ error: "aggregate_failed" });
   }
 }
-

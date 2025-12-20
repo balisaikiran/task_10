@@ -9,6 +9,9 @@ export default async function handler(req, res) {
     const events = await Event.find({ session_id: sessionId }).sort({ timestamp: 1 }).lean();
     return res.json(events);
   } catch (e) {
+    if (e && e.message === "Missing MONGODB_URI") {
+      return res.status(500).json({ error: "missing_env", env: "MONGODB_URI" });
+    }
     return res.status(500).json({ error: "query_failed" });
   }
 }

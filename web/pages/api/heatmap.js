@@ -26,7 +26,9 @@ export default async function handler(req, res) {
     const clicks = await Event.find({ page_url: url, type: "click" }, { x: 1, y: 1, timestamp: 1, _id: 0 }).lean();
     return res.json({ page_url: url, clicks });
   } catch (e) {
+    if (e && e.message === "Missing MONGODB_URI") {
+      return res.status(500).json({ error: "missing_env", env: "MONGODB_URI" });
+    }
     return res.status(500).json({ error: "heatmap_failed" });
   }
 }
-

@@ -8,6 +8,7 @@ export default function Heatmap() {
   const [url, setUrl] = useState("");
   const [clicks, setClicks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const maxX = useMemo(() => (clicks.length ? Math.max(...clicks.map((c) => c.x || 0)) : 0), [clicks]);
   const maxY = useMemo(() => (clicks.length ? Math.max(...clicks.map((c) => c.y || 0)) : 0), [clicks]);
@@ -20,9 +21,17 @@ export default function Heatmap() {
   function load() {
     if (!url) return;
     setLoading(true);
+    setError("");
     fetch(`/api/heatmap?url=${encodeURIComponent(url)}`)
-      .then((r) => r.json())
+      .then(async (r) => {
+        const data = await r.json().catch(() => null);
+        if (!r.ok) {
+          throw new Error((data && data.error) || "request_failed");
+        }
+        return data;
+      })
       .then((d) => setClicks(d.clicks || []))
+      .catch((e) => setError(e?.message || "request_failed"))
       .finally(() => setLoading(false));
   }
 
@@ -38,6 +47,7 @@ export default function Heatmap() {
           <Input label="URL" className="wide" placeholder="Page URL" value={url} onChange={(e) => setUrl(e.target.value)} />
           <Button variant="primary" onClick={load}>Load</Button>
           {loading && <span className="muted">Loading…</span>}
+          {error && <span className="muted">Error: {error}</span>}
         </div>
       </Card>
       <Card title="Heatmap" subtitle={`Container ${containerW}×${containerH}, ${clicks.length} clicks`}>
