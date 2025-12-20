@@ -1,5 +1,6 @@
 # User Analytics Application
 
+
 ## Objective
 - Track `page_view` and `click` events with a lightweight JS tracker
 - Store events in MongoDB via API endpoints
